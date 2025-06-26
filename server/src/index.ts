@@ -10,9 +10,21 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+const whitelist = [
+  'http://localhost:3000',
+  'https://gorba.xyz',
+  'https://www.gorba.xyz'
+];
+
 // Middleware
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: function (origin, callback) {
+    if (!origin || whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 app.use(express.json());
