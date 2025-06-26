@@ -1,0 +1,39 @@
+# Dependencies
+/node_modules
+/gorba-gluttons/node_modules
+/server/node_modules
+
+# Next.js build artifacts
+/gorba-gluttons/.next/
+/gorba-gluttons/out/
+
+# Server build artifacts
+/server/dist/
+/server/logs/
+
+# Secrets and environment-specific files
+*.env
+.env.*
+env.local
+!/.env.example
+
+# SQL scripts (uncomment if you don't want them in the repo)
+# *.sql
+
+# OS-generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Test coverage
+coverage/
+.nyc_output/ 

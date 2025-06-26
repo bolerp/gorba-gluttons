@@ -1,0 +1,161 @@
+@import "@solana/wallet-adapter-react-ui/styles.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 13% 8%;
+    --foreground: 60 5% 95%;
+    --card: 220 13% 10%;
+    --card-foreground: 60 5% 95%;
+    --popover: 220 13% 10%;
+    --popover-foreground: 60 5% 95%;
+    --primary: 84 81% 44%;
+    --primary-foreground: 220 13% 8%;
+    --secondary: 220 13% 15%;
+    --secondary-foreground: 60 5% 95%;
+    --muted: 220 13% 15%;
+    --muted-foreground: 60 5% 65%;
+    --accent: 84 81% 44%;
+    --accent-foreground: 220 13% 8%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 60 5% 95%;
+    --border: 220 13% 20%;
+    --input: 220 13% 20%;
+    --ring: 84 81% 44%;
+    --radius: 0.5rem;
+    --stink-green: 84 81% 44%;
+    --toxic-yellow: 54 100% 50%;
+    --slime-green: 120 100% 25%;
+  }
+}
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Custom animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    text-shadow: 0 0 5px rgba(132, 204, 22, 0.5);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(132, 204, 22, 0.8), 0 0 30px rgba(132, 204, 22, 0.6);
+  }
+}
+
+@keyframes stink-pulse {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(132, 204, 22, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(132, 204, 22, 0.6), 0 0 30px rgba(132, 204, 22, 0.4);
+  }
+}
+
+@keyframes marquee {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+/* Custom utility classes */
+@layer utilities {
+  .float-animation {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .glow-text {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  .stink-pulse {
+    animation: stink-pulse 2s ease-in-out infinite;
+  }
+
+  .gradient-bg {
+    background: linear-gradient(135deg, 
+      hsl(220, 13%, 8%) 0%, 
+      hsl(220, 13%, 12%) 50%, 
+      hsl(220, 13%, 8%) 100%);
+  }
+
+  .toxic-gradient {
+    background: linear-gradient(135deg, 
+      hsl(84, 81%, 44%) 0%, 
+      hsl(54, 100%, 50%) 50%, 
+      hsl(120, 100%, 25%) 100%);
+  }
+
+  .animate-marquee {
+    animation: marquee 20s linear infinite;
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(220, 13%, 15%);
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(84, 81%, 44%);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(84, 81%, 50%);
+}
+
+/* Hide all wallets except Backpack in adapter modal */
+.wallet-adapter-modal-list {
+  position: relative;
+  margin-top: 0 !important;
+}
+.wallet-adapter-modal-title {
+  visibility: hidden;
+  position: relative;
+  margin-bottom: -2.5rem;
+}
+.wallet-adapter-modal-title::after {
+  content: "Connect Backpack wallet (Gorbagana)";
+  visibility: visible;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.wallet-adapter-modal-list::before {
+  content: "";
+}
+.wallet-adapter-modal-list li {
+  display: none !important;
+}
+.wallet-adapter-modal-list li:has(img[alt*="Backpack"]) {
+  display: flex !important;
+}
+
+.gorba-steps .gorba-copy {
+  display: inline-block;
+  min-width: 140px;
+}
