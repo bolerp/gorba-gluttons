@@ -206,7 +206,11 @@ export default function RacePage() {
   useEffect(() => {
     if (!publicKey) return
 
-    const socketConnection = io('http://localhost:3001')
+    // Build Socket.io endpoint from env vars (works in dev & production)
+    const SOCKET_URL = (process.env.NEXT_PUBLIC_SOCKET_URL as string) ||
+      ((process.env.NEXT_PUBLIC_API_URL as string)?.replace(/\/?api$/, '') ?? 'http://localhost:3001');
+
+    const socketConnection = io(SOCKET_URL, { transports: ['websocket'] })
     
     socketConnection.on('connect', () => {
       console.log('🏁 Connected to race server')
