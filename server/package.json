@@ -24,7 +24,8 @@
     "tweetnacl": "^1.0.3",
     "winston": "^3.10.0",
     "winston-daily-rotate-file": "^4.7.1",
-    "bs58": "^5.0.0"
+    "bs58": "^5.0.0",
+    "node-fetch": "^2.6.11"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",

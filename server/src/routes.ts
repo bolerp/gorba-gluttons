@@ -13,6 +13,7 @@ import { PublicKey, Transaction, SystemProgram, sendAndConfirmTransaction } from
 import nacl from 'tweetnacl';
 import logger, { gameLogger } from './logger';
 import { getRaceManager } from './game/raceManager';
+import fetch from 'node-fetch'; // proxy helper
 
 const router = Router();
 
@@ -888,6 +889,22 @@ router.get('/refund-requests', async (req, res) => {
   } catch (error) {
     logger.error('Error in /refund-requests', { error });
     res.status(500).json({ error: 'Failed to fetch refund requests' });
+  }
+});
+
+// RPC proxy to bypass CORS for browsers
+router.post('/rpc', async (req, res) => {
+  try {
+    const resp = await fetch('https://rpc.gorbagana.wtf', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(req.body as any)
+    });
+    const data = await resp.json();
+    res.json(data);
+  } catch (e) {
+    logger.error('RPC proxy error', { error: e });
+    res.status(500).json({ error: 'rpc proxy failed' });
   }
 });
 
