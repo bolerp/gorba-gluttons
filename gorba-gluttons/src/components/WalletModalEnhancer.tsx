@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 export default function WalletModalEnhancer() {
   useEffect(() => {
-    const RPC_URL = "https://gorchain.wstf.io";
+    const RPC_URL = "https://rpc.gorbagana.wtf";
 
     const inject = () => {
       const list = document.querySelector<HTMLElement>(

@@ -10,7 +10,7 @@ interface Props {
 
 export default function WalletContextProvider({ children }: Props) {
   // RPC endpoint (Gorbagana)
-  const endpoint = process.env.NEXT_PUBLIC_GORBAGANA_RPC_URL || "https://gorchain.wstf.io"
+  const endpoint = process.env.NEXT_PUBLIC_GORBAGANA_RPC_URL || "https://rpc.gorbagana.wtf"
 
   // Initialise wallet list (only Backpack for now)
   const wallets = useMemo(() => [new BackpackWalletAdapter()], [])

@@ -16,12 +16,16 @@
   "dependencies": {
     "@solana/web3.js": "^1.98.2",
     "@supabase/supabase-js": "^2.50.1",
+    "@types/socket.io": "^3.0.1",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "socket.io": "^4.8.1",
     "tweetnacl": "^1.0.3",
     "winston": "^3.10.0",
-    "winston-daily-rotate-file": "^4.7.1"
+    "winston-daily-rotate-file": "^4.7.1",
+    "bs58": "^5.0.0",
+    "@gorbagana/web3.js": "file:../gorba-gluttons/node_modules/@gorbagana/web3.js"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",

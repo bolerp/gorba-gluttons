@@ -4,7 +4,7 @@ import { Smartphone } from "lucide-react"
 
 export default function MobileBlocker() {
   return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-900 text-white p-8 text-center">
+    <div className="fixed inset-0 z-30 flex flex-col items-center justify-center bg-gray-900 text-white p-8 text-center">
       <Smartphone className="w-16 h-16 mb-6 text-lime-400" />
       <h1 className="text-3xl font-bold mb-4">Desktop Only</h1>
       <p className="max-w-md text-gray-400">

@@ -29,7 +29,7 @@ cp env.example .env
 PORT=3001
 SUPABASE_URL=https://ваш-проект.supabase.co
 SUPABASE_SERVICE_KEY=ваш-service-role-key
-GORBAGANA_RPC_URL=https://gorchain.wstf.io
+GORBAGANA_RPC_URL=https://rpc.gorbagana.wtf
 TRASH_CAN_ADDRESS=адрес-мусорного-кошелька
 FRONTEND_URL=http://localhost:3000
 ```

@@ -1,13 +1,17 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import { createServer } from 'http';
+import { Server as SocketIOServer } from 'socket.io';
 import apiRoutes from './routes';
 import { gameLogger } from './logger';
+import { initializeRaceSystem } from './game/raceManager';
 
 // Загружаем переменные окружения
 dotenv.config();
 
 const app = express();
+const server = createServer(app);
 const PORT = process.env.PORT || 3001;
 
 const whitelist = [
@@ -29,6 +33,18 @@ app.use(cors({
 }));
 app.use(express.json());
 
+// Socket.io setup
+const io = new SocketIOServer(server, {
+  cors: {
+    origin: whitelist,
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
+
+// Initialize race system with socket.io
+initializeRaceSystem(io);
+
 // Базовые роуты
 app.get('/', (req, res) => {
   res.json({ 
@@ -40,7 +56,8 @@ app.get('/', (req, res) => {
       leaderboard: '/api/leaderboard',
       stats: '/api/stats',
       player: '/api/player/:walletAddress',
-      feed: 'POST /api/feed'
+      feed: 'POST /api/feed',
+      websocket: 'ws://localhost:' + PORT + ' (Race Mode)'
     }
   });
 });
@@ -50,6 +67,11 @@ app.get('/api/health', (req, res) => {
     status: 'ok',
     service: 'gorba-gluttons-server',
     version: '1.0.0',
+    features: {
+      rest_api: true,
+      websocket: true,
+      race_mode: true
+    },
     environment: {
       supabase: !!process.env.SUPABASE_URL,
       gorbagana_rpc: !!process.env.GORBAGANA_RPC_URL,
@@ -62,8 +84,10 @@ app.get('/api/health', (req, res) => {
 app.use('/api', apiRoutes);
 
 // Запускаем сервер
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   gameLogger.startup(Number(PORT));
+  console.log(`🚀 HTTP Server running on port ${PORT}`);
+  console.log(`⚡ WebSocket Server ready for Race Mode`);
 });
 
 export default app; 

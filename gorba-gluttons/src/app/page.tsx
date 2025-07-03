@@ -16,12 +16,11 @@ import { ACHIEVEMENTS } from "@/lib/achievements"
 import type { Achievement } from "@/types";
 import ActivityFeed from "@/components/ActivityFeed";
 import type { MessageSignerWalletAdapter } from "@solana/wallet-adapter-base";
-import { useConnection } from "@solana/wallet-adapter-react";
-import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import ReferralDashboard from "@/components/ReferralDashboard";
 import { useAudio } from "@/hooks/useAudio"
 import RefundPanel from "@/components/RefundPanel";
 import AchievementNotification from "@/components/AchievementNotification";
+import Link from 'next/link';
 
 export default function Home() {
   // Game state
@@ -30,9 +29,9 @@ export default function Home() {
   const [leaderboard, setLeaderboard] = useState<Player[]>([])
   const [currentPlayer, setCurrentPlayer] = useState<Player | undefined>()
   const [nickname, setNickname] = useState("")
+  const [hoveredMode, setHoveredMode] = useState<'solo' | 'race' | null>(null)
 
   const { publicKey, wallet } = useWallet()
-  const { connection } = useConnection();
 
   const router = useRouter()
 
@@ -54,7 +53,6 @@ export default function Home() {
   const [showAchievementNotification, setShowAchievementNotification] = useState(false)
 
   // New state
-  const [showInvite, setShowInvite] = useState(false);
   const [refAddress, setRefAddress] = useState<string | null>(null);
 
   const [feedSuccess, setFeedSuccess] = useState<{open:boolean; amount:number; stink:number; line:string}>({open:false, amount:0, stink:0, line:""});
@@ -70,6 +68,8 @@ export default function Home() {
 
   const [feedError, setFeedError] = useState(false);
   const [feedHappy, setFeedHappy] = useState(false);
+
+  const [showGameModal, setShowGameModal] = useState(false);
 
   const playSound = useAudio()
 
@@ -101,7 +101,6 @@ export default function Home() {
         setTxLeft(serverTx)
         
         // console.log(`📊 Daily limits updated: ${serverDaily.toFixed(4)} GOR left, ${serverTx} feeds left`)
-        console.log(`📈 Today's usage: ${todayVolume.toFixed(4)} GOR spent, ${todayCount} feeds made`)
       }
     } catch (e) {
       console.error("Failed to refresh daily limits", e)
@@ -234,10 +233,8 @@ export default function Home() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     const ref = localStorage.getItem("referrerAddress");
-    const shown = localStorage.getItem("refInviteShown");
-    if (ref && shown !== ref) {
+    if (ref) {
       setRefAddress(ref);
-      setShowInvite(true);
     }
   }, []);
 
@@ -297,9 +294,9 @@ export default function Home() {
         setTimeout(() => setFeedHappy(false), 2000);
         
         const line = successLines[Math.floor(Math.random() * successLines.length)];
-        setFeedSuccess({ 
-          open: true, 
-          amount: amt, 
+        setFeedSuccess({
+          open: true,
+          amount: amt,
           stink: result.stink,
           line 
         });
@@ -315,7 +312,7 @@ export default function Home() {
           setDailyLeft(result.dailyLeft)
           setTxLeft(result.txLeft)
           // console.log(`📊 Limits updated after feed: ${result.dailyLeft.toFixed(4)} GOR left, ${result.txLeft} feeds left`)
-        } else {
+      } else {
           // Fallback: обновляем локально
           setDailyLeft(prev => Math.max(0, prev - amt));
           setTxLeft(prev => Math.max(0, prev - 1));
@@ -343,7 +340,7 @@ export default function Home() {
             const walletKey = publicKey.toBase58();
             const shownArray = Array.from(shownRef.current);
             localStorage.setItem(`shownAchievements:${walletKey}`, JSON.stringify(shownArray));
-          }
+        }
         }
 
       } else {
@@ -372,7 +369,7 @@ export default function Home() {
     if (!publicKey || !nickname) return
 
     try {
-      const signer = wallet?.adapter as unknown as MessageSignerWalletAdapter;
+    const signer = wallet?.adapter as unknown as MessageSignerWalletAdapter;
       if (!signer?.signMessage) {
         setToasts([{ text: "Wallet doesn't support message signing" }]);
         return;
@@ -389,8 +386,8 @@ export default function Home() {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api"}/player`,
         {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ 
             walletAddress: publicKey.toBase58(), 
             nickname,
@@ -403,7 +400,7 @@ export default function Home() {
         setToasts([{ text: "Nickname saved successfully!" }]);
         setNickname("");
         // refresh leaderboard soon
-      } else {
+    } else {
         const error = await res.json();
         setToasts([{ text: error.error || "Failed to save nickname" }]);
       }
@@ -450,11 +447,11 @@ export default function Home() {
           
           // Определяем новые разблокированные достижения
           const newUnlocked = new Set(allAchievements.filter(a => a.unlocked).map(a => a.id));
-          const justUnlocked = [...newUnlocked].filter(
+        const justUnlocked = [...newUnlocked].filter(
             (id: string) => !prevUnlocked.has(id) && !shownRef.current.has(id)
-          );
+        );
 
-          if (justUnlocked.length > 0) {
+        if (justUnlocked.length > 0) {
             const newlyUnlockedAchievements = allAchievements.filter(a => justUnlocked.includes(a.id));
             
             console.log(`🏆 Showing ${newlyUnlockedAchievements.length} new achievements:`, newlyUnlockedAchievements.map(a => a.name));
@@ -470,8 +467,8 @@ export default function Home() {
             
             // Сохраняем в localStorage
             saveShownAchievements();
-          }
-          setPrevUnlocked(newUnlocked);
+        }
+        setPrevUnlocked(newUnlocked);
           setAchievements(allAchievements);
         }
       } catch (e) {
@@ -499,11 +496,7 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, [toasts]);
 
-  // Function handleCloseBanner
-  const acknowledgeInvite = () => {
-    if (refAddress) localStorage.setItem("refInviteShown", refAddress);
-    setShowInvite(false);
-  };
+
 
   // Daily left state fetching
   useEffect(() => {
@@ -537,21 +530,24 @@ export default function Home() {
     let cancelled = false;
     const fetchBalance = async () => {
       try {
-        const lamports = await connection.getBalance(publicKey);
+        const res = await fetch(`/api/balance?address=${publicKey.toBase58()}`);
+        if (res.ok) {
+          const { balance: bal } = await res.json();
         if (!cancelled) {
-          setBalance(Math.round((lamports / LAMPORTS_PER_SOL) * 100) / 100);
+            setBalance(Math.round(bal * 1000) / 1000);
+          }
         }
       } catch (e) {
         console.error("balance fetch fail", e);
       }
     };
-    fetchBalance();
-    const id = setInterval(fetchBalance, 10000);
+    fetchBalance()
+    const interval = setInterval(fetchBalance, 30000)
     return () => {
       cancelled = true;
-      clearInterval(id);
+      clearInterval(interval);
     };
-  }, [publicKey, connection]);
+  }, [publicKey]);
 
   // Referrals polling
   useEffect(() => {
@@ -632,11 +628,11 @@ export default function Home() {
 
 
   return (
-    <div className="min-h-screen p-4 lg:p-8">
+    <div className="min-h-screen p-4 lg:p-8 overflow-hidden">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.header
-          className="flex items-center justify-between mb-4 p-3 bg-gray-900/60 backdrop-blur-md border border-gray-700 rounded-lg shadow-lg"
+          className="relative z-20 flex items-center justify-between mb-6 p-3 bg-gray-900/60 backdrop-blur-md border border-gray-700 rounded-lg shadow-lg"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -646,14 +642,16 @@ export default function Home() {
             <img src="/logo.png" alt="Trash logo" className="w-8 h-8" />
             <span className="text-2xl lg:text-3xl font-extrabold bg-gradient-to-r from-lime-300 via-yellow-300 to-lime-500 bg-clip-text text-transparent whitespace-nowrap drop-shadow-[0_0_6px_rgba(132,204,22,0.8)]">
               Gorba-Gluttons
-            </span>
+              </span>
+            </div>
+          <div className="flex items-center gap-4">
+            <WalletMultiButton className="!h-9" />
           </div>
-          <WalletMultiButton className="!h-9" />
         </motion.header>
 
         {/* Game Stats */}
         <motion.div
-          className="mb-4"
+          className="mb-6"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
@@ -661,20 +659,45 @@ export default function Home() {
           <GameStats stats={gameStats} />
         </motion.div>
 
-        {/* Activity Marquee */}
-        <div className="mb-6">
-          <ActivityFeed />
-        </div>
-
-        {/* Main Game Area */}
-        <div className="grid lg:grid-cols-2 gap-8 items-start">
-          {/* Left Column - Monster */}
+        {/* Main Game Selection Area */}
+        <div className="relative mb-8">
+          {/* Game Mode Selection - Trash Bins Layout */}
+          <div className="flex items-center justify-center gap-8 lg:gap-16 mb-8">
+            
+            {/* Solo Mode Trash Bin */}
           <motion.div
-            className="flex flex-col items-center space-y-8"
-            initial={{ opacity: 0, x: -50 }}
+              className="relative group cursor-default select-none w-64 lg:w-72 h-96 flex items-end justify-center"
+              onMouseEnter={() => setHoveredMode('solo')}
+              onMouseLeave={() => setHoveredMode(null)}
+              initial={{ opacity: 0, x: -100 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.3 }}
-          >
+              whileHover={{ scale: 1.05, rotate: -2 }}
+            >
+              <div className="relative select-none pointer-events-none transition-all duration-300 group-hover:brightness-75">
+                <motion.img 
+                  src="/bin1.png" 
+                  alt="Solo Mode Bin" 
+                  className="w-full max-h-full object-contain drop-shadow-2xl" 
+                  whileHover={{ y: -10 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                />
+                {/* Coming soon overlay - без темного фона */}
+                <div className="absolute inset-0 flex items-center justify-center text-yellow-300 text-xl lg:text-2xl font-extrabold tracking-wide opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                  Coming&nbsp;Soon
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Central Monster */}
+            <motion.div
+              className="relative z-10"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.7, delay: 0.5 }}
+            >
+              <div className="relative">
+                {/* Monster with enhanced reactions */}
             <GorbaGlutton
               onFeed={handleFeed}
               isFeeding={isFeeding}
@@ -684,15 +707,48 @@ export default function Home() {
               dailyLeft={dailyLeft}
               isAngry={feedError}
               isHappy={feedHappy}
+                  tilt={hoveredMode === 'solo' ? -12 : hoveredMode === 'race' ? 12 : 0}
             />
+              </div>
+            </motion.div>
 
-            {/* How to Play */}
+            {/* Race Mode Trash Bin */}
             <motion.div
-              className="bg-gray-900/30 backdrop-blur-sm rounded-lg border border-gray-700 p-6 max-w-md"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
+              className="relative cursor-pointer group"
+              onMouseEnter={() => setHoveredMode('race')}
+              onMouseLeave={() => setHoveredMode(null)}
+              initial={{ opacity: 0, x: 100 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7, delay: 0.3 }}
+              whileHover={{ scale: 1.05, rotate: 2 }}
             >
+              <Link href="/race" className="block relative w-64 lg:w-72 h-96 flex items-end justify-center transition-all duration-300 group-hover:brightness-110">
+                <img 
+                  src="/bin2.png" 
+                  alt="Race Mode Bin" 
+                  className="w-full max-h-full object-contain drop-shadow-2xl" 
+                />
+              </Link>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Activity Marquee */}
+        <div className="mb-8">
+          <ActivityFeed />
+        </div>
+
+        {/* Bottom Section - Leaderboard and Info */}
+        <div className="grid lg:grid-cols-2 gap-8 items-start">
+          {/* Left Column - How to Play & Nickname */}
+          <motion.div
+            className="space-y-6"
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7, delay: 0.6 }}
+            >
+            {/* How to Play */}
+            <div className="bg-gray-900/30 backdrop-blur-sm rounded-lg border border-gray-700 p-6">
               <h3 className="text-lg font-bold text-white mb-4">How to Play</h3>
               <div className="space-y-3 text-sm text-gray-300">
                 <div className="flex items-start space-x-3">
@@ -701,22 +757,22 @@ export default function Home() {
                 </div>
                 <div className="flex items-start space-x-3">
                   <span className="text-lime-400 font-bold">2.</span>
-                  <span>Feed Gorba-Glutton by making transactions</span>
+                  <span>Join multiplayer race and compete to the top</span>
                 </div>
                 <div className="flex items-start space-x-3">
                   <span className="text-lime-400 font-bold">3.</span>
-                  <span>Generate Stink and climb the leaderboard</span>
+                  <span>Feed Gorba-Glutton to generate Stink and climb leaderboards</span>
                 </div>
                 <div className="flex items-start space-x-3">
                   <span className="text-lime-400 font-bold">4.</span>
-                  <span>Become the King of the Heap! 👑</span>
+                  <span>Become the ultimate Trash Tower King! 👑</span>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
             {/* Nickname setter */}
             {currentPlayer && !currentPlayer.nickname && publicKey && (
-              <div className="bg-gray-900/30 backdrop-blur-sm rounded-lg border border-gray-700 p-4 max-w-md w-full">
+              <div className="bg-gray-900/30 backdrop-blur-sm rounded-lg border border-gray-700 p-4">
                 <h3 className="text-md font-bold text-white mb-2">Pick your Trash Tag</h3>
                 <div className="flex space-x-2">
                   <input
@@ -734,15 +790,13 @@ export default function Home() {
                 <p className="text-xs text-gray-500 mt-1">3-16 chars, letters, digits, underscore</p>
               </div>
             )}
-
-
           </motion.div>
 
           {/* Right Column - Leaderboard */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7, delay: 0.4 }}
+            transition={{ duration: 0.7, delay: 0.7 }}
           >
             <Leaderboard 
               players={leaderboard} 
@@ -781,8 +835,6 @@ export default function Home() {
           }}
         />
 
-
-
         {/* Achievement Notifications */}
         {showAchievementNotification && newAchievements.length > 0 && (
           <AchievementNotification
@@ -795,7 +847,7 @@ export default function Home() {
         )}
 
         {/* Toasts */}
-        <div className="fixed bottom-4 right-4 flex flex-col items-end space-y-2 z-[100] pointer-events-none">
+        <div className="fixed bottom-4 right-4 flex flex-col items-end space-y-2 z-40 pointer-events-none">
           <AnimatePresence>
             {toasts.map((toast, idx) => (
               <motion.div
@@ -812,70 +864,74 @@ export default function Home() {
           </AnimatePresence>
         </div>
 
-        {/* Invite Banner */}
-        {showInvite && refAddress && (
-          <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm">
-            <motion.div
-              initial={{ opacity: 0, y: -50, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 50, scale: 0.9 }}
-              transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              className="relative bg-gray-900 border-2 border-lime-500/30 rounded-2xl p-8 max-w-md text-center shadow-2xl overflow-hidden"
-            >
-              <div className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] bg-lime-500/10 rounded-full animate-pulse" />
-              <div className="relative z-10">
-                <h2 className="text-3xl font-bold text-white mb-3 glow-text">
-                  You've Been Summoned!
-                </h2>
-                <p className="text-gray-300 mb-6">
-                  Your first feed will boost <span className="font-mono text-lime-400">{refAddress.slice(0, 4)}…{refAddress.slice(-4)}</span>'s Stink Score.
-                </p>
-                <button
-                  onClick={acknowledgeInvite}
-                  className="px-8 py-3 bg-lime-500 text-black text-lg rounded-lg font-bold hover:bg-lime-400 transition-all scale-100 hover:scale-105 shadow-[0_0_20px_rgba(132,204,22,0.5)]"
-        >
-                  Feed the Beast!
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
 
+
+        {/* Feed Success Modal */}
         {feedSuccess.open && (
-          <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm">
             <motion.div
-              initial={{ opacity:0, scale:0.9}}
-              animate={{ opacity:1, scale:1}}
-              exit={{ opacity:0, scale:0.9}}
-              transition={{ type:"spring", stiffness:260, damping:20}}
-              className="bg-gray-900 border-2 border-lime-500/30 rounded-2xl p-8 max-w-sm text-center shadow-2xl"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="fixed inset-0 bg-black/60 flex items-center justify-center z-30 backdrop-blur-sm"
+            onClick={() => setFeedSuccess({open: false, amount: 0, stink: 0, line: ""})}
+          >
+            <motion.div
+              initial={{ scale: 0.8, y: 50 }}
+              animate={{ scale: 1, y: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              className="bg-gray-900 border-2 border-lime-500/50 rounded-2xl p-8 max-w-md text-center shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
             >
-              <h2 className="text-3xl font-bold text-lime-400 mb-2">+{feedSuccess.amount.toFixed(2)} GOR!</h2>
-              <p className="text-xl font-bold text-yellow-400 mb-4">+{Math.round(feedSuccess.stink)} Stink</p>
-              <p className="text-gray-300 mb-6">{feedSuccess.line}</p>
-              <button onClick={()=>setFeedSuccess({open:false, amount:0, stink:0, line:""})} className="px-6 py-2 bg-lime-500 text-black rounded-lg font-bold hover:bg-lime-400 transition">Got it</button>
-            </motion.div>
+              <div className="text-6xl mb-4">🤤</div>
+              <h2 className="text-2xl font-bold text-lime-400 mb-2">Delicious!</h2>
+              <p className="text-white mb-2">{feedSuccess.line}</p>
+              <div className="bg-gray-800 rounded-lg p-4 mb-4">
+                <p className="text-sm text-gray-400">Transaction Amount</p>
+                <p className="text-xl font-bold text-yellow-400">{feedSuccess.amount.toFixed(4)} GOR</p>
+                <p className="text-sm text-gray-400 mt-2">Stink Generated</p>
+                <p className="text-lg font-bold text-lime-400">+{feedSuccess.stink}</p>
           </div>
+              <button
+                onClick={() => setFeedSuccess({open: false, amount: 0, stink: 0, line: ""})}
+                className="px-6 py-2 bg-lime-500 text-black rounded-lg font-bold hover:bg-lime-400"
+              >
+                Awesome!
+              </button>
+            </motion.div>
+          </motion.div>
         )}
 
         {/* Referral Modal */}
-        {showRefModal && publicKey && (
-          <div
-            className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm"
+        {showRefModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="fixed inset-0 bg-black/60 flex items-center justify-center z-30 backdrop-blur-sm p-4"
             onClick={() => setShowRefModal(false)}
           >
             <motion.div
-              initial={{ opacity:0, scale:0.9 }}
-              animate={{ opacity:1, scale:1 }}
-              exit={{ opacity:0, scale:0.9 }}
-              transition={{ type:"spring", stiffness:260, damping:20 }}
-              className="bg-gray-900 border-2 border-lime-500/30 rounded-2xl p-6 w-full max-w-md text-center shadow-2xl"
-              onClick={(e)=>e.stopPropagation()}
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="bg-gray-900 border border-gray-700 rounded-lg max-w-2xl w-full max-h-[80vh] overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
             >
-              <ReferralDashboard address={publicKey.toBase58()} bonus={refBonus} referrals={referrals} rank={currentPlayer?.rank ?? 0} stinkScore={stinkScore} onToast={(msg)=>setToasts(t=>[...t,{text:msg}])} />
-              <button onClick={()=>setShowRefModal(false)} className="mt-4 px-4 py-2 bg-lime-500 text-black rounded-lg font-bold hover:bg-lime-400 transition">Close</button>
-            </motion.div>
+                             <ReferralDashboard 
+                 address={publicKey?.toBase58() || ''}
+                 bonus={refBonus}
+                 referrals={referrals}
+                 rank={currentPlayer?.rank || 0}
+                 stinkScore={stinkScore}
+                 onToast={(msg) => setToasts(t => [...t, {text: msg}])}
+               />
+               <div className="flex justify-center mt-4">
+                 <button
+                   onClick={() => setShowRefModal(false)}
+                   className="px-4 py-2 bg-lime-500 text-black rounded-lg font-bold hover:bg-lime-400 transition"
+                 >
+                   Close
+                 </button>
           </div>
+            </motion.div>
+          </motion.div>
         )}
       </div>
     </div>

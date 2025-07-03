@@ -13,9 +13,10 @@ interface GorbaGluttonProps {
   txLeft: number
   isAngry?: boolean
   isHappy?: boolean
+  tilt?: number
 }
 
-export default function GorbaGlutton({ onFeed, isFeeding, stinkScore, dailyLeft, balance, txLeft, isAngry = false, isHappy = false }: GorbaGluttonProps) {
+export default function GorbaGlutton({ onFeed, isFeeding, stinkScore, dailyLeft, balance, txLeft, isAngry = false, isHappy = false, tilt = 0 }: GorbaGluttonProps) {
   const [isHovered, setIsHovered] = useState(false)
   const [amount, setAmount] = useState("0.1")
   const parsed = parseFloat(amount)
@@ -61,8 +62,14 @@ export default function GorbaGlutton({ onFeed, isFeeding, stinkScore, dailyLeft,
           whileTap={{ scale: 0.95 }}
           animate={{
             y: isFeeding ? [0, -10, 0] : [0, -5, 0],
+            rotate: tilt,
+            scale: tilt === 0 ? 1 : 1.1,
           }}
-          transition={{ duration: isFeeding ? 0.5 : 3, repeat: Infinity, ease: "easeInOut" }}
+          transition={{ 
+            y: { duration: isFeeding ? 0.5 : 3, repeat: Infinity, ease: "easeInOut" },
+            rotate: { type: "spring", stiffness: 200, damping: 20 },
+            scale: { type: "spring", stiffness: 200, damping: 20 }
+          }}
           onClick={() => onFeed(parsed)}
         />
 

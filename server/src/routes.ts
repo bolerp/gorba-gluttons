@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { 
   getPlayer, 
   createOrUpdatePlayer, 
@@ -12,6 +12,9 @@ import { PublicKey } from '@solana/web3.js';
 // @ts-ignore
 import nacl from 'tweetnacl';
 import logger, { gameLogger } from './logger';
+import { getRaceManager } from './game/raceManager';
+// Dev blockchain helpers removed; verifyPayment now handled internally in RaceManager.
+import { Transaction, SystemProgram, sendAndConfirmTransaction } from '@gorbagana/web3.js';
 
 const router = Router();
 
@@ -80,6 +83,38 @@ router.get('/stats', async (req, res) => {
   } catch (error) {
     logger.error('Error in /stats', { error });
     res.status(500).json({ error: 'Failed to fetch stats' });
+  }
+});
+
+// Получить статистику гонок (Race Mode)
+router.get('/race-stats', async (req, res) => {
+  try {
+    const raceManager = getRaceManager();
+    if (!raceManager) {
+      res.status(503).json({ error: 'Race system not initialized' });
+      return;
+    }
+
+    const raceStats = raceManager.getRaceStats();
+    
+    // Получаем последние результаты гонок из базы данных
+    const { data: recentRaces, error } = await supabase
+      .from('race_results')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(10);
+
+    if (error) {
+      logger.error('Error fetching recent races', { error });
+    }
+
+    res.json({
+      ...raceStats,
+      recentRaces: recentRaces || []
+    });
+  } catch (error) {
+    logger.error('Error in /race-stats', { error });
+    res.status(500).json({ error: 'Failed to fetch race stats' });
   }
 });
 

@@ -159,3 +159,33 @@
   display: inline-block;
   min-width: 140px;
 }
+
+/* Z-index hierarchy */
+.z-achievement-notification {
+  z-index: 200 !important;
+}
+
+.z-modal {
+  z-index: 150 !important;
+}
+
+.z-toast {
+  z-index: 100 !important;
+}
+
+/* Wallet adapter dropdown fix */
+.wallet-adapter-dropdown {
+  z-index: 200 !important;
+}
+
+.wallet-adapter-dropdown-list {
+  z-index: 200 !important;
+}
+
+.wallet-adapter-modal-overlay {
+  z-index: 1000 !important;
+}
+
+.wallet-adapter-modal {
+  z-index: 1001 !important;
+}
