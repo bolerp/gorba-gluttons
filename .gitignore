@@ -17,7 +17,7 @@
 env.local
 !/.env.example
 
-# SQL scripts (uncomment if you don't want them in the repo)
+# SQL scripts 
 # *.sql
 
 # OS-generated files
@@ -37,3 +37,6 @@ yarn-error.log*
 # Test coverage
 coverage/
 .nyc_output/ 
+
+# Keys
+keys
