@@ -19,6 +19,9 @@ build/
 logs
 *.log
 
+# Keys
+keys
+
 # Runtime data
 pids
 *.pid
