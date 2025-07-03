@@ -188,7 +188,7 @@ export default function RacePage() {
       setNickname(null);
       return;
     }
-    const backend = process.env.NEXT_PUBLIC_BACKEND_HOST || 'http://localhost:3001';
+    const backend = ((process.env.NEXT_PUBLIC_API_URL as string)?.replace(/\/?api$/, '')) || 'http://localhost:3001';
     fetch(`${backend}/api/player/${publicKey.toBase58()}`)
       .then(res => res.ok ? res.json() : null)
       .then(data => {
