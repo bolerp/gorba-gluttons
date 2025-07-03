@@ -1,124 +1,148 @@
-# 🗑️ Gorba-Gluttons
+# 🗑️ Gorba-Gluttons - Multiplayer Trash Racing Game
 
-**Feed the Beast • Rule the Heap • Become the King**
+**The First Multiplayer Racing Game on Gorbagana Testnet**
 
-The ultimate trash game on Gorbagana network. Feed Gorba-Glutton, generate Stink, and become the King of the Heap!
+A fast-paced, competitive multiplayer game built specifically for the Gorbagana testnet, showcasing zero-MEV execution and instant finality through exciting trash-themed racing mechanics.
 
-## 🎮 What is Gorba-Gluttons?
+🌐 **Live Demo**: [https://gorba.xyz](https://gorba.xyz)
 
-Gorba-Gluttons is an interactive on-chain game built for the Gorbagana network (a Solana fork). Players act as "Trash Collectors" who feed the insatiable Gorba-Glutton monster by making transactions. Each transaction generates "Stink" points, and players compete to become the "King of the Heap."
+## 🎮 Game Overview
 
-## 🌟 Features
+Gorba-Gluttons is a real-time multiplayer game where players compete in thrilling races using native Gorbagana test tokens (GOR). The game combines:
 
-- **Interactive Monster**: Animated Gorba-Glutton with feeding animations
-- **Real-time Leaderboard**: Compete with other players across different time periods
-- **Stink Score System**: Earn points based on transaction frequency and volume
-- **Referral System**: Build your "Garbage Patch" and earn from referrals
-- **Responsive Design**: Beautiful UI with dark theme and smooth animations
-- **Season-based Competition**: Currently running Season 1: Slime Season
+- **Real-time Multiplayer Racing**: Up to 4 players race simultaneously
+- **Blockchain-powered Prizes**: Winners receive GOR token rewards instantly
+- **Progressive Monster Evolution**: Feed your Gorba-Glutton with different trash types
+- **Achievement System**: Unlock rewards based on racing performance
+- **Social Competition**: Climb leaderboards and build referral networks
 
-## 🚀 Getting Started
+### Game Modes
+1. **Multiplayer Racing**: Real-time competitive races with entry fees and prizes
+2. **Monster Feeding**: Interactive feeding system with transaction-based scoring
+
+## 🔗 Gorbagana Integration Details
+
+### Native Blockchain Features
+- **Native GOR Token Usage**: Entry fees (0.05+ GOR) and prize distribution
+- **Instant Finality**: Races conclude with immediate prize payouts
+- **Zero-MEV Environment**: Fair racing mechanics guaranteed by Gorbagana's architecture
+- **Web2-like Speed**: Real-time gameplay enabled by fast block times
+
+### Smart Contract Integration
+- **Automated Prize Distribution**: Winners receive payouts automatically via blockchain transactions
+- **Transparent Racing**: All race results and prize distributions are on-chain
+- **Wallet Integration**: Full support for Backpack wallet
+
+### Technical Implementation
+- **RPC Integration**: Direct connection to Gorbagana testnet via custom RPC proxy
+- **Transaction Processing**: Real-time transaction signing and broadcasting
+- **Balance Management**: Live GOR balance tracking and updates
+
+## 🚀 How to Access the Demo
+
+### Live Demo (Recommended)
+1. Visit **[https://gorba.xyz](https://gorba.xyz)**
+2. Connect your Backpack wallet
+3. Ensure your wallet is connected to the Gorbagana testnet
+4. Start playing immediately!
+
+### Getting Test Tokens
+- Join the Gorbagana Discord for test GOR tokens
+- Or visit the official Gorbagana faucet https://faucet.gorbagana.wtf/
+
+## 🛠️ Local Development Setup
 
 ### Prerequisites
-
 - Node.js 18+ 
 - npm or yarn
-- A Solana-compatible wallet (Backpack recommended)
+- Backpack wallet with Gorbagana testnet configured
 
-### Installation
-
-1. Clone the repository:
+### Frontend Setup
 ```bash
-git clone https://github.com/your-username/gorba-gluttons.git
+# Clone the repository
+git clone https://github.com/bolerp/gorba-gluttons.git
 cd gorba-gluttons
-```
 
-2. Install dependencies:
-```bash
+# Install dependencies
 npm install
-```
 
-3. Run the development server:
-```bash
+# Set environment variables
+echo "NEXT_PUBLIC_API_URL=http://localhost:3001/api" > .env.local
+
+# Start development server
 npm run dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser
+### Backend Setup (Optional - for full local testing)
+```bash
+# Navigate to server directory
+cd server
 
-## 🎯 How to Play
+# Install dependencies
+npm install
 
-1. **Connect Your Wallet**: Click "Connect Wallet" to join the game
-2. **Feed Gorba-Glutton**: Make transactions to feed the monster
-3. **Generate Stink**: Earn Stink points based on your activity
-4. **Climb the Leaderboard**: Compete to become the King of the Heap
-5. **Build Your Garbage Patch**: Refer friends and earn bonus points
+# Configure environment variables
+cp env.example .env
+# Edit .env with your Gorbagana RPC URL and wallet keys
 
-## 🏗️ Tech Stack
+# Start the server
+npm run dev
+```
+
+### Local Access
+- Frontend: [http://localhost:3000](http://localhost:3000)
+- Backend API: [http://localhost:3001](http://localhost:3001)
+
+## 🎯 Key Features Showcasing Gorbagana
+
+### 1. Real-time Multiplayer (30-second races)
+- Demonstrates Gorbagana's speed and low latency
+- WebSocket connections for live race updates
+- Instant result processing
+
+### 2. Micro-transactions
+- Small entry fees (0.05+ GOR) showcase practical token usage
+- Instant prize distribution demonstrates network efficiency
+- Gas-free user experience
+
+### 3. Creative Token Utilization
+- **Entry Fees**: Players pay GOR to join races
+- **Prize Pools**: Automated distribution to winners
+- **Achievement Rewards**: Bonus tokens for milestones
+- **Referral System**: Network effect rewards
+
+## 🏆 Competitive Elements
+
+- **Leaderboards**: Daily, weekly, and all-time rankings
+- **Achievement System**: 12+ unlockable achievements
+- **Referral Network**: Build your "Garbage Patch" of referred players
+- **Seasonal Competition**: Season 1: Slime Season currently active
+
+## 🔧 Technical Stack
 
 - **Frontend**: Next.js 15, React 19, TypeScript
-- **Styling**: Tailwind CSS 4.x with custom animations
-- **Animations**: Framer Motion
-- **Icons**: Lucide React
-- **Deployment**: Vercel (recommended)
+- **Backend**: Node.js, Express, Socket.IO
+- **Blockchain**: Gorbagana testnet integration
+- **Database**: Supabase (race results and leaderboards)
+- **Deployment**: Vercel (frontend) + VPS (backend)
 
-## 🎨 Design Philosophy
+## 🎮 Wallet Support
 
-Gorba-Gluttons embraces the "trash" aesthetic as a symbol of true, unbranded decentralization. The game transforms mundane transactions into meaningful, performative acts of community identity within the Gorbagana ecosystem.
+- **Primary**: Backpack wallet (recommended)
+- **Features**: Auto-connect, balance display, transaction signing
 
-## 🔄 Current Status
+## 📱 Supported Platforms
 
-This is **Version 1** of Gorba-Gluttons, featuring:
-- Mock wallet integration (blockchain integration coming soon)
-- Animated UI components
-- Complete game mechanics simulation
-- Responsive design ready for mobile
+- **Desktop**: Full experience with all features
 
-## 🛠️ Development
+## 🌟 What Makes This Special
 
-### Project Structure
-
-```
-src/
-├── app/                 # Next.js app router
-├── components/          # React components
-│   ├── GorbaGlutton.tsx    # Main monster component
-│   ├── Leaderboard.tsx     # Leaderboard display
-│   ├── WalletConnect.tsx   # Wallet connection
-│   └── GameStats.tsx       # Game statistics
-├── lib/                 # Utility functions
-├── types/               # TypeScript type definitions
-└── styles/              # Global styles
-```
-
-### Available Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
-
-## 🚀 Deployment
-
-The project is optimized for deployment on Vercel:
-
-1. Push your code to GitHub
-2. Connect your repository to Vercel
-3. Deploy with one click!
-
-## 🤝 Contributing
-
-We welcome contributions! Please feel free to submit a Pull Request.
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
-## 🎭 Lore & Community
-
-> "If nobody creates Gorbagana network in 48 hours, I'll be very disappointed" - Toly
-
-Join the Gorbagana community and embrace the chaos of decentralized trash collecting!
+1. **First Real Multiplayer Game** on Gorbagana testnet
+2. **Practical Token Economics** - not just speculation
+3. **Community Building** through referrals and competition
+4. **Technical Innovation** - showcases Gorbagana's speed advantages
+5. **Engaging Gameplay** - replayable and addictive racing mechanics
 
 ---
 
-Built with 💚 for the Gorbagana ecosystem
+**Built for #GorbaganaTestnet** | **Follow**: @Gorbagana_chain @sarv_shaktimaan @lex_node
