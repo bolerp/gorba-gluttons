@@ -253,7 +253,7 @@ class RaceManager {
   }
 
   private startRace(players: Player[], arena: string) {
-    const raceId = `race_${++this.raceIdCounter}`;
+    const raceId = `race_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
     const seed = Math.random().toString(36).substring(2,10);
     const entryFeeLamports = RaceManager.ENTRY_FEE_MAP[arena] || ENTRY_FEE_LAMPORTS;
     const bankLamports = players.length * entryFeeLamports;

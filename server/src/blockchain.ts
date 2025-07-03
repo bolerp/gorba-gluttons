@@ -12,6 +12,7 @@ if (!secretBase58) throw new Error('RACE_TREASURY_SECRET env var is missing');
 export const treasury = Keypair.fromSecretKey(bs58.decode(secretBase58));
 
 export const ENTRY_FEE_LAMPORTS = Number(process.env.ENTRY_FEE_LAMPORTS || 0);
+console.log(`[CONFIG] ENTRY_FEE_LAMPORTS set to: ${ENTRY_FEE_LAMPORTS}`);
 
 /**
  * Verify that a transfer tx paid the entry fee from player to treasury.
