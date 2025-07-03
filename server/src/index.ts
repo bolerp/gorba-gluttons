@@ -17,7 +17,8 @@ const PORT = process.env.PORT || 3001;
 const whitelist = [
   'http://localhost:3000',
   'https://gorba.xyz',
-  'https://www.gorba.xyz'
+  'https://www.gorba.xyz',
+  'https://gorba-gluttons.vercel.app'
 ];
 
 // Middleware
