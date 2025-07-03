@@ -645,6 +645,17 @@ export default function Home() {
               </span>
             </div>
           <div className="flex items-center gap-4">
+            <a 
+              href="https://x.com/gorbaxyz" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center space-x-1 px-3 py-1.5 text-gray-400 hover:text-white hover:bg-gray-800/50 rounded-lg transition-all duration-200 group"
+            >
+              <svg className="w-4 h-4 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              </svg>
+              <span className="text-sm font-medium hidden sm:inline">@gorbaxyz</span>
+            </a>
             <WalletMultiButton className="!h-9" />
           </div>
         </motion.header>
@@ -812,12 +823,26 @@ export default function Home() {
 
         {/* Footer */}
         <motion.footer
-          className="mt-16 text-center text-gray-400 space-y-2"
+          className="mt-16 text-center text-gray-400 space-y-3"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.8 }}
         >
-          <p>Built on Gorbagana Network 🗑️</p>
+          <div className="flex items-center justify-center space-x-4">
+            <p>Built on Gorbagana Network 🗑️</p>
+            <div className="h-4 w-px bg-gray-600"></div>
+            <a 
+              href="https://x.com/gorbaxyz" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center space-x-2 text-gray-400 hover:text-white transition-colors duration-200 group"
+            >
+              <svg className="w-4 h-4 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              </svg>
+              <span className="text-sm font-medium">@gorbaxyz</span>
+            </a>
+          </div>
           <p className="text-sm">
             &ldquo;If nobody creates Gorbagana network in 48 hours, I&apos;ll be very disappointed&rdquo; - Toly
           </p>

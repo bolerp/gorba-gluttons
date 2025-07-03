@@ -9,23 +9,38 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Gorba-Gluttons | Feed the Beast, Rule the Heap",
-  description: "The ultimate trash game on Gorbagana network. Feed Gorba-Glutton, generate Stink, and become the King of the Heap!",
-  keywords: ["Gorbagana", "blockchain", "game", "DeFi", "Web3", "Solana"],
+  description: "Interactive trash feeding game on Gorbagana testnet. Feed Gorba-Glutton, generate Stink points, climb leaderboards and unlock achievements!",
+  keywords: ["Gorbagana", "blockchain", "game", "interactive", "feeding", "testnet", "Web3", "Solana", "achievements"],
+  metadataBase: new URL('https://gorba.xyz'),
   openGraph: {
     title: "Gorba-Gluttons | Feed the Beast, Rule the Heap",
-    description: "The ultimate trash game on Gorbagana network. Feed Gorba-Glutton, generate Stink, and become the King of the Heap!",
+    description: "Interactive trash feeding game on Gorbagana testnet. Feed Gorba-Glutton, generate Stink points, climb leaderboards and unlock achievements!",
     type: "website",
+    url: "https://gorba.xyz",
+    siteName: "Gorba-Gluttons",
+    images: [
+      {
+        url: "/banner.png",
+        width: 1200,
+        height: 630,
+        alt: "Gorba-Gluttons - Feed the Beast, Rule the Heap",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
+    site: "@gorbaxyz",
+    creator: "@gorbaxyz",
     title: "Gorba-Gluttons | Feed the Beast, Rule the Heap",
-    description: "The ultimate trash game on Gorbagana network. Feed Gorba-Glutton, generate Stink, and become the King of the Heap!",
+    description: "Interactive trash feeding game on Gorbagana testnet. Feed Gorba-Glutton, generate Stink points, climb leaderboards!",
+    images: ["/banner.png"],
   },
   icons: {
-    icon: "/logo.png",
-    shortcut: "/logo.png",
-    apple: "/logo.png",
+    icon: "/favicon/favicon.ico",
+    shortcut: "/favicon/favicon-96x96.png",
+    apple: "/favicon/apple-touch-icon.png",
   },
+  manifest: "/favicon/site.webmanifest",
 };
 
 export default function RootLayout({
