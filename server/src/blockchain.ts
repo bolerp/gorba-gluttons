@@ -1,7 +1,7 @@
 // @ts-ignore - external package without types
 import bs58 from 'bs58';
-// @ts-ignore - Gorbagana SDK path provided at runtime
-import { Connection, Keypair, PublicKey, Transaction, SystemProgram, sendAndConfirmTransaction } from '@gorbagana/web3.js';
+// @ts-ignore - using Solana web3.js SDK
+import { Connection, Keypair, PublicKey, Transaction, SystemProgram, sendAndConfirmTransaction } from '@solana/web3.js';
 
 // RPC endpoint (can be prod or local)
 export const conn = new Connection(process.env.GOR_RPC || 'https://rpc.gorbagana.wtf', 'confirmed');

@@ -8,13 +8,11 @@ import {
   supabase,
   type Player 
 } from './supabase';
-import { PublicKey } from '@solana/web3.js';
+import { PublicKey, Transaction, SystemProgram, sendAndConfirmTransaction } from '@solana/web3.js';
 // @ts-ignore
 import nacl from 'tweetnacl';
 import logger, { gameLogger } from './logger';
 import { getRaceManager } from './game/raceManager';
-// Dev blockchain helpers removed; verifyPayment now handled internally in RaceManager.
-import { Transaction, SystemProgram, sendAndConfirmTransaction } from '@gorbagana/web3.js';
 
 const router = Router();
 
