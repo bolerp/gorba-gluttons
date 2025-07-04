@@ -829,7 +829,7 @@ export default function Home() {
           transition={{ duration: 0.5, delay: 0.8 }}
         >
           <div className="flex items-center justify-center space-x-4">
-            <p>Built on Gorbagana Network 🗑️</p>
+          <p>Built on Gorbagana Network 🗑️</p>
             <div className="h-4 w-px bg-gray-600"></div>
             <a 
               href="https://x.com/gorbaxyz" 

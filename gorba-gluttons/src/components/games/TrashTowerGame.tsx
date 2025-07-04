@@ -11,6 +11,10 @@ const JUMP_FORCE = -12;
 const SUPER_JUMP_FORCE = -18;
 const MOVE_SPEED = 5;
 
+// Delta time constants
+const TARGET_FPS = 60;
+const FRAME_TIME = 1000 / TARGET_FPS; // 16.67ms per frame at 60fps
+
 const PLATFORM_WIDTH = 70;
 const PLATFORM_HEIGHT = 15;
 const PLATFORM_COUNT = 15; // Fewer platforms on screen
@@ -52,7 +56,7 @@ const ARENA_BACKGROUNDS = {
 
 // Stink-o-Meter
 const METER_MAX = 100;
-const BOOST_DURATION = 180; // 3 seconds at 60fps
+const BOOST_DURATION = 3; // 3 seconds (now in actual seconds, not frames)
 
 type PlatformType = 'normal' | 'bouncy' | 'breakable' | 'moving';
 type ArenaType = 'bronze' | 'silver' | 'gold';
@@ -124,6 +128,11 @@ const TrashTowerGame: React.FC<MultiplayerOptions> = ({
   // Multiplayer helpers
   const lastSentScore = useRef(0);
   const lastPosSentAt = useRef(0);
+  
+  // Delta time tracking
+  const lastFrameTime = useRef(performance.now());
+  const deltaTime = useRef(1);
+  
   type Opponent = {
     x: number;
     y: number;
@@ -360,6 +369,17 @@ const TrashTowerGame: React.FC<MultiplayerOptions> = ({
     let animationFrameId: number;
     
     const gameLoop = () => {
+      // Calculate delta time
+      const currentTime = performance.now();
+      const rawDeltaTime = currentTime - lastFrameTime.current;
+      lastFrameTime.current = currentTime;
+      
+      // Normalize delta time to 60fps baseline
+      deltaTime.current = rawDeltaTime / FRAME_TIME;
+      
+      // Cap delta time to prevent huge jumps (e.g., when tab is inactive)
+      deltaTime.current = Math.min(deltaTime.current, 3);
+      
       context.clearRect(0, 0, canvas.width, canvas.height);
       
       // Draw background
@@ -417,7 +437,7 @@ const TrashTowerGame: React.FC<MultiplayerOptions> = ({
         // --- Boost Logic ---
         if (boostTimer.current > 0) {
             player.current.vy = -10; // Rocket speed
-            boostTimer.current--;
+            boostTimer.current -= deltaTime.current;
         } else {
              // --- Physics & Updates (Original Doodle Jump style) ---
             if (keys.current['arrowleft'] || keys.current['a']) player.current.vx = -MOVE_SPEED;
@@ -425,10 +445,10 @@ const TrashTowerGame: React.FC<MultiplayerOptions> = ({
             else player.current.vx = 0;
             
             // Always apply gravity (no sticky platforms in original Doodle Jump)
-            player.current.vy += GRAVITY;
+            player.current.vy += GRAVITY * deltaTime.current;
         }
-        player.current.x += player.current.vx;
-        player.current.y += player.current.vy;
+        player.current.x += player.current.vx * deltaTime.current;
+        player.current.y += player.current.vy * deltaTime.current;
        
 
         // --- Camera Movement ---
@@ -458,7 +478,7 @@ const TrashTowerGame: React.FC<MultiplayerOptions> = ({
         platforms.current.forEach(platform => {
             // Update moving platforms
             if (platform.speed) {
-                platform.x += platform.speed;
+                platform.x += platform.speed * deltaTime.current;
                 if (platform.x <= 0 || platform.x + platform.width >= canvas.width) {
                     platform.speed *= -1;
                 }
@@ -598,10 +618,10 @@ const TrashTowerGame: React.FC<MultiplayerOptions> = ({
         if (enableMultiplayer) {
             Object.values(opponents.current).forEach(opp => {
                 // Smooth X toward target
-                opp.drawX += (opp.x - opp.drawX) * 0.2;
+                opp.drawX += (opp.x - opp.drawX) * 0.2 * deltaTime.current;
                 // Compute desired Y based on score difference (myScore - oppScore)
                 const targetY = player.current.y + (score.current - opp.score);
-                opp.drawY += (targetY - opp.drawY) * 0.2;
+                opp.drawY += (targetY - opp.drawY) * 0.2 * deltaTime.current;
                 const oppSprite = imagesLoaded && images.current['skin_rusty'];
                 if (oppSprite) {
                     context.save();
