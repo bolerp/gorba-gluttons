@@ -733,13 +733,41 @@ export default function Home() {
               transition={{ duration: 0.7, delay: 0.3 }}
               whileHover={{ scale: 1.05, rotate: 2 }}
             >
-              <Link href="/race" className="block relative w-64 lg:w-72 h-96 flex items-end justify-center transition-all duration-300 group-hover:brightness-110">
-                <img 
-                  src="/bin2.png" 
-                  alt="Race Mode Bin" 
-                  className="w-full max-h-full object-contain drop-shadow-2xl" 
-                />
-              </Link>
+              <div className="text-center">
+                <Link href="/race" className="block relative w-64 lg:w-72 h-96 flex items-end justify-center transition-all duration-300 group-hover:brightness-110">
+                  <img 
+                    src="/bin2.png" 
+                    alt="Race Mode Bin" 
+                    className="w-full max-h-full object-contain drop-shadow-2xl" 
+                  />
+                </Link>
+                
+                {/* Play Button Under the Bin */}
+                <motion.div
+                  className="mt-4 -mb-2"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.8 }}
+                >
+                  <Link 
+                    href="/race"
+                    className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-lime-500 to-yellow-500 text-black font-bold rounded-xl hover:from-lime-400 hover:to-yellow-400 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 group"
+                  >
+                    <span className="mr-2">🎮</span>
+                    PLAY NOW
+                    <motion.span 
+                      className="ml-2 group-hover:translate-x-1 transition-transform"
+                      animate={{ x: [0, 3, 0] }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                    >
+                      →
+                    </motion.span>
+                  </Link>
+                  <div className="text-sm text-gray-400 mt-2">
+                    Multiplayer racing game
+                  </div>
+                </motion.div>
+              </div>
             </motion.div>
           </div>
         </div>
